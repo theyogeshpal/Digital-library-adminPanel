@@ -1,0 +1,273 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f5f5f5;
+}
+
+.admin-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 250px;
+    background: #1a1a2e;
+    color: white;
+    padding: 20px 0;
+    position: fixed;
+    height: 100vh;
+}
+
+.logo {
+    padding: 0 20px 30px;
+    border-bottom: 1px solid #2a2a3e;
+}
+
+.logo h2 {
+    font-size: 20px;
+}
+
+.nav-menu {
+    margin-top: 20px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 20px;
+    color: #b8b8d1;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.nav-item:hover, .nav-item.active {
+    background: #16213e;
+    color: white;
+    border-left: 4px solid #4a90e2;
+}
+
+.nav-item span {
+    font-size: 20px;
+}
+
+.logout {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+}
+
+.main-content {
+    margin-left: 250px;
+    flex: 1;
+    padding: 20px;
+}
+
+.header {
+    background: white;
+    padding: 20px 30px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.header h1 {
+    font-size: 28px;
+    color: #1a1a2e;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    background: #4a90e2;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+}
+
+.content-section {
+    display: none;
+}
+
+.content-section.active {
+    display: block;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.stat-card {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.stat-card h3 {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.stat-number {
+    font-size: 32px;
+    font-weight: bold;
+    color: #1a1a2e;
+}
+
+.section-header {
+    margin-bottom: 20px;
+}
+
+.btn-primary {
+    background: #4a90e2;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background 0.3s;
+}
+
+.btn-primary:hover {
+    background: #357abd;
+}
+
+.data-table {
+    width: 100%;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.data-table thead {
+    background: #f8f9fa;
+}
+
+.data-table th, .data-table td {
+    padding: 15px;
+    text-align: left;
+}
+
+.data-table th {
+    font-weight: 600;
+    color: #1a1a2e;
+}
+
+.data-table tbody tr {
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.data-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.badge.active {
+    background: #d4edda;
+    color: #155724;
+}
+
+.btn-edit, .btn-delete {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    margin-right: 5px;
+}
+
+.btn-edit {
+    background: #ffc107;
+    color: #000;
+}
+
+.btn-delete {
+    background: #dc3545;
+    color: white;
+}
+
+.settings-form {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    max-width: 600px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.settings-form h3 {
+    margin-bottom: 20px;
+    color: #1a1a2e;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #666;
+    font-weight: 500;
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #4a90e2;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 70px;
+    }
+    
+    .main-content {
+        margin-left: 70px;
+    }
+    
+    .nav-item span:last-child {
+        display: none;
+    }
+    
+    .logo h2 {
+        font-size: 24px;
+        text-align: center;
+    }
+}
