@@ -1,11 +1,11 @@
-import { Users as UsersIcon, TrendingUp, Activity, DollarSign } from 'lucide-react'
+import { Users as UsersIcon, TrendingUp, Activity, DollarSign, IndianRupee } from 'lucide-react'
 
 const Dashboard = () => {
   const stats = [
     { title: 'Total Users', value: '1,234', icon: UsersIcon, gradient: 'from-blue-500 to-cyan-500', bg: 'from-blue-50 to-cyan-50', change: '+12%' },
     { title: 'Total Books', value: '567', icon: Activity, gradient: 'from-purple-500 to-pink-500', bg: 'from-purple-50 to-pink-50', change: '+8%' },
     { title: 'Active Loans', value: '89', icon: TrendingUp, gradient: 'from-orange-500 to-red-500', bg: 'from-orange-50 to-red-50', change: '+23%' },
-    { title: 'Revenue', value: '₹45,678', icon: DollarSign, gradient: 'from-green-500 to-emerald-500', bg: 'from-green-50 to-emerald-50', change: '+15%' },
+    { title: 'Revenue', value: '₹45,678', icon: IndianRupee, gradient: 'from-green-500 to-emerald-500', bg: 'from-green-50 to-emerald-50', change: '+15%' },
   ]
 
   return (
@@ -19,8 +19,8 @@ const Dashboard = () => {
                 <h3 className="text-slate-600 text-sm font-semibold uppercase tracking-wide">{stat.title}</h3>
                 <p className={`text-4xl font-bold bg-gradient-to-r ${stat.gradient} bg-clip-text text-transparent mt-2`}>{stat.value}</p>
               </div>
-              <div className={`p-4 bg-gradient-to-br ${stat.gradient} rounded-2xl shadow-lg group-hover:scale-110 transition-transform`}>
-                <stat.icon className="w-8 h-8 text-white" />
+              <div className={`p-4 bg-gradient-to-br ${stat.gradient} rounded-2xl shadow-lg group-hover:scale-105 transition-transform`}>
+                <stat.icon className="w-5 h-5 text-white" />
               </div>
             </div>
             <div className="flex items-center gap-2 mt-4">

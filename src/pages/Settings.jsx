@@ -45,7 +45,7 @@ const Settings = () => {
           </div>
           <button
             type="submit"
-            className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-xl hover:shadow-xl hover:scale-105 transition-all duration-300 font-semibold"
+            className="flex items-center gap-2 bg-green-600 text-white px-8 py-3 rounded-xl hover:shadow-xl hover:scale-105 transition-all duration-300 font-semibold"
           >
             <Save className="w-5 h-5" />
             Save Changes
