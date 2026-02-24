@@ -8,7 +8,7 @@ const Users = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/api/users')
+        const response = await axios.get('https://digital-library-backend-jesb.onrender.com/api/users')
         setUsers(response.data.data)
       } catch (error) {
         console.error('Error fetching users:', error)
