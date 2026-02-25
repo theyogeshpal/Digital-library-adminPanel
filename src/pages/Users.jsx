@@ -1,4 +1,4 @@
-import { UserPlus, Edit2, Trash2, Mail, CheckCircle } from 'lucide-react'
+import { UserPlus, Edit2, Trash2, Mail, CheckCircle, X } from 'lucide-react'
 import { useState, useEffect} from 'react'
 import axios from 'axios'
 import Swal from 'sweetalert2'
@@ -8,16 +8,23 @@ const Users = () => {
 
   const navigate = useNavigate();
 
-  const admin = localStorage.removeItem('adminUsername')
+  const admin = localStorage.getItem('adminUsername')
   useEffect(() => {
-    console.log(admin)
     if(!admin){
       navigate('/')
     }
-  }, [navigate])
+  }, [navigate, admin])
 
   const [users, setUsers] = useState([])
-
+  const [showModal, setShowModal] = useState(false)
+  const [formData, setFormData] = useState({
+    fullname: '',
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    dob: ''
+  })
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -65,7 +72,6 @@ const Users = () => {
           showConfirmButton: false
         });
 
-        // Refresh users list
         setUsers(users.filter(user => (user._id || user.id) !== userId));
       } catch (error) {
         Swal.fire({
@@ -78,6 +84,62 @@ const Users = () => {
     }
   };
 
+  const handleAddUser = async (e) => {
+    e.preventDefault();
+
+    if (formData.password !== formData.confirmPassword) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Password Mismatch',
+        text: 'Password and Confirm Password do not match',
+        confirmButtonColor: '#4F46E5'
+      });
+      return;
+    }
+
+    Swal.fire({
+      title: 'Creating User...',
+      text: 'Please wait',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
+    try {
+      const { confirmPassword, ...userData } = formData;
+      await axios.post('https://digital-library-backend-jesb.onrender.com/api/user', userData);
+
+      Swal.fire({
+        icon: 'success',
+        title: 'User Created!',
+        text: 'User has been registered successfully',
+        timer: 1500,
+        showConfirmButton: false
+      });
+
+      setShowModal(false);
+      setFormData({
+        fullname: '',
+        username: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        dob: ''
+      });
+
+      const response = await axios.get('https://digital-library-backend-jesb.onrender.com/api/users');
+      setUsers(response.data.data);
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Registration Failed',
+        text: error.response?.data?.message || 'Failed to create user',
+        confirmButtonColor: '#4F46E5'
+      });
+    }
+  };
+
   return (
     <div>
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
@@ -85,7 +147,10 @@ const Users = () => {
           <h2 className="text-2xl sm:text-3xl font-bold text-slate-800">User Management</h2>
           <p className="text-slate-500 mt-1 text-sm">Manage all registered users</p>
         </div>
-        <button className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2.5 rounded-xl hover:shadow-xl transition-all font-semibold text-sm">
+        <button 
+          onClick={() => setShowModal(true)}
+          className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2.5 rounded-xl hover:shadow-xl transition-all font-semibold text-sm"
+        >
           <UserPlus className="w-4 h-4" />
           Add User
         </button>
@@ -183,6 +248,111 @@ const Users = () => {
           ))
         )}
       </div>
+
+      {/* Add User Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 relative max-h-[90vh] overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-blue-500 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:hover:bg-blue-600">
+            <button
+              onClick={() => setShowModal(false)}
+              className="absolute top-4 right-4 w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors"
+            >
+              <X size={20} className="text-gray-600" />
+            </button>
+
+            <h2 className="text-2xl font-black text-gray-900 mb-4">Add New User</h2>
+
+            <form onSubmit={handleAddUser} className="space-y-4">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
+                <input
+                  type="text"
+                  value={formData.fullname}
+                  onChange={(e) => setFormData({...formData, fullname: e.target.value})}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Enter full name"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Username</label>
+                <input
+                  type="text"
+                  value={formData.username}
+                  onChange={(e) => setFormData({...formData, username: e.target.value})}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Enter username"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+                <input
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Enter email"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Password</label>
+                <input
+                  type="password"
+                  value={formData.password}
+                  onChange={(e) => setFormData({...formData, password: e.target.value})}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Enter password"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Confirm Password</label>
+                <input
+                  type="password"
+                  value={formData.confirmPassword}
+                  onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Confirm password"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Date of Birth</label>
+                <input
+                  type="date"
+                  value={formData.dob}
+                  onChange={(e) => setFormData({...formData, dob: e.target.value})}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                />
+              </div>
+
+              <div className="flex gap-3 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  className="flex-1 px-6 py-3 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-colors font-semibold"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:shadow-lg transition-all font-semibold"
+                >
+                  Create User
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -1,24 +1,90 @@
-import { BookPlus, Edit2, Trash2, Tag } from 'lucide-react'
+import { BookPlus, Edit2, Trash2, Tag, X } from 'lucide-react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import Swal from 'sweetalert2'
 
 const Books = () => {
 
   const navigate = useNavigate()
+  const [showModal, setShowModal] = useState(false)
+  const [formData, setFormData] = useState({
+    title: '',
+    author: '',
+    category: '',
+    rating: '',
+    reviews: '',
+    pages: '',
+    language: '',
+    publishDate: '',
+    isbn: '',
+    image: null,
+    bookPdf: null,
+    description: '',
+    fullDescription: ''
+  })
   
-  const admin = localStorage.removeItem('adminUsername')
+  const admin = localStorage.getItem('adminUsername');
   
   useEffect(() => {
-    console.log(admin)
     if(!admin){
       navigate('/')
     }
-  }, [navigate])
+  }, [navigate, admin])
 
   const books = [
     { id: 1, title: 'The Great Gatsby', author: 'F. Scott Fitzgerald', category: 'Fiction' },
     { id: 2, title: 'To Kill a Mockingbird', author: 'Harper Lee', category: 'Fiction' },
     { id: 3, title: '1984', author: 'George Orwell', category: 'Dystopian' },
   ]
+
+  const handleAddBook = async (e) => {
+    e.preventDefault();
+
+    Swal.fire({
+      title: 'Adding Book...',
+      text: 'Please wait',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
+    try {
+      // API call will be added here
+      // await axios.post('API_URL', formData);
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Book Added!',
+        text: 'Book has been added successfully',
+        timer: 1500,
+        showConfirmButton: false
+      });
+
+      setShowModal(false);
+      setFormData({
+        title: '',
+        author: '',
+        category: '',
+        rating: '',
+        pages: '',
+        language: '',
+        publishDate: '',
+        isbn: '',
+        image: null,
+        bookPdf: null,
+        description: '',
+        fullDescription: ''
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Failed to Add Book',
+        text: error.response?.data?.message || 'Something went wrong',
+        confirmButtonColor: '#4F46E5'
+      });
+    }
+  };
 
   return (
     <div>
@@ -27,7 +93,10 @@ const Books = () => {
           <h2 className="text-2xl sm:text-3xl font-bold text-slate-800">Book Management</h2>
           <p className="text-slate-500 mt-1 text-sm">Manage your library collection</p>
         </div>
-        <button className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2.5 rounded-xl hover:shadow-xl transition-all font-semibold text-sm">
+        <button 
+          onClick={() => setShowModal(true)}
+          className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2.5 rounded-xl hover:shadow-xl transition-all font-semibold text-sm"
+        >
           <BookPlus className="w-4 h-4" />
           Add Book
         </button>
@@ -61,11 +130,9 @@ const Books = () => {
                   <div className="flex gap-2">
                     <button className="flex items-center gap-1 bg-green-600 text-white px-2 py-2 rounded-lg hover:shadow-lg transition-all font-medium">
                       <Edit2 className="w-4 h-4" />
-                      
                     </button>
                     <button className="flex items-center gap-1 bg-red-500 text-white px-2 py-2 rounded-lg hover:shadow-lg transition-all font-medium">
                       <Trash2 className="w-4 h-4" />
-                      
                     </button>
                   </div>
                 </td>
@@ -105,6 +172,176 @@ const Books = () => {
           </div>
         ))}
       </div>
+
+      {/* Add Book Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full p-8 relative max-h-[90vh] overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-blue-500 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:hover:bg-blue-600">
+            <button
+              onClick={() => setShowModal(false)}
+              className="absolute top-4 right-4 w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors"
+            >
+              <X size={20} className="text-gray-600" />
+            </button>
+
+            <h2 className="text-2xl font-black text-gray-900 mb-6">Add New Book</h2>
+
+            <form onSubmit={handleAddBook} className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Title</label>
+                  <input
+                    type="text"
+                    value={formData.title}
+                    onChange={(e) => setFormData({...formData, title: e.target.value})}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Author</label>
+                  <input
+                    type="text"
+                    value={formData.author}
+                    onChange={(e) => setFormData({...formData, author: e.target.value})}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Category</label>
+                  <input
+                    type="text"
+                    value={formData.category}
+                    onChange={(e) => setFormData({...formData, category: e.target.value})}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Language</label>
+                  <input
+                    type="text"
+                    value={formData.language}
+                    onChange={(e) => setFormData({...formData, language: e.target.value})}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Pages</label>
+                  <input
+                    type="number"
+                    value={formData.pages}
+                    onChange={(e) => setFormData({...formData, pages: e.target.value})}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Publish Date</label>
+                  <input
+                    type="text"
+                    value={formData.publishDate}
+                    onChange={(e) => setFormData({...formData, publishDate: e.target.value})}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">ISBN</label>
+                  <input
+                    type="text"
+                    value={formData.isbn}
+                    onChange={(e) => setFormData({...formData, isbn: e.target.value})}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Rating</label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    max="5"
+                    value={formData.rating}
+                    onChange={(e) => setFormData({...formData, rating: e.target.value})}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Book Image</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setFormData({...formData, image: e.target.files[0]})}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-700 file:font-semibold hover:file:bg-blue-100"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Book PDF</label>
+                <input
+                  type="file"
+                  accept=".pdf"
+                  onChange={(e) => setFormData({...formData, bookPdf: e.target.files[0]})}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-700 file:font-semibold hover:file:bg-blue-100"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+                <textarea
+                  value={formData.description}
+                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                  rows="3"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Full Description</label>
+                <textarea
+                  value={formData.fullDescription}
+                  onChange={(e) => setFormData({...formData, fullDescription: e.target.value})}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                  rows="4"
+                  required
+                />
+              </div>
+
+              <div className="flex gap-3 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  className="flex-1 px-6 py-3 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-colors font-semibold"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:shadow-lg transition-all font-semibold"
+                >
+                  Add Book
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

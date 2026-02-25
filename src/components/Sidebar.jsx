@@ -9,6 +9,11 @@ const Sidebar = ({ isOpen, onClose }) => {
     { path: '/settings', icon: Settings, label: 'Settings' },
   ]
 
+  const logout = () => {
+    localStorage.removeItem('adminUsername')
+    window.location.href = '/'
+  }
+
   return (
     <>
       {/* Overlay */}
@@ -61,7 +66,9 @@ const Sidebar = ({ isOpen, onClose }) => {
           ))}
         </nav>
         <div className="absolute bottom-6 w-full px-6">
-          <button className="flex items-center justify-center gap-4 w-full px-4 py-3.5 bg-red-500 rounded-xl  border border-slate-700/50 group">
+          <button  onClick={() => {
+              logout()
+            }}  className="flex items-center justify-center gap-4 w-full px-4 py-3.5 bg-red-500 rounded-xl  border border-slate-700/50 group">
             <LogOut className="w-5 h-5 group-hover:scale-110 transition-transform" />
             <span className="font-medium">Logout</span>
           </button>

@@ -1,5 +1,5 @@
 import { Routes, Route, useNavigate } from 'react-router-dom'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Sidebar from '../components/Sidebar'
 import Header from '../components/Header'
 import Dashboard from '../pages/Dashboard'
@@ -9,13 +9,14 @@ import Settings from '../pages/Settings'
 
 const Layout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
-
   const navigate = useNavigate()
 
-  const admin = localStorage.removeItem('adminUsername')
-  if(!admin){
-    navigate('/')
-  }
+  useEffect(() => {
+    const admin = localStorage.getItem('adminUsername')
+    if (!admin) {
+      navigate('/')
+    }
+  }, [navigate])
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">

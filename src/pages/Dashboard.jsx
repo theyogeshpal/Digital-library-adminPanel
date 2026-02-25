@@ -6,10 +6,9 @@ const Dashboard = () => {
   
   const navigate = useNavigate()
   
-    const admin = localStorage.removeItem('adminUsername')
+  const admin = localStorage.getItem('adminUsername')
 
   useEffect(() => {
-    console.log(admin)
     if(!admin){
       navigate('/')
     }
