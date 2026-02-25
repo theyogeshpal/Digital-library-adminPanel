@@ -1,6 +1,19 @@
 import { Save, Building2, Mail, Phone } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
 const Settings = () => {
+
+  const navigate = useNavigate()
+  
+  const admin = localStorage.removeItem('adminUsername')
+  useEffect(() => {
+    console.log(admin)
+    if(!admin){
+      navigate('/')
+    }
+  }, [navigate])
+
+
   return (
     <div>
       <div className="mb-8">

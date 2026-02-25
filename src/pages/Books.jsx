@@ -1,6 +1,19 @@
 import { BookPlus, Edit2, Trash2, Tag } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
 const Books = () => {
+
+  const navigate = useNavigate()
+  
+  const admin = localStorage.removeItem('adminUsername')
+  
+  useEffect(() => {
+    console.log(admin)
+    if(!admin){
+      navigate('/')
+    }
+  }, [navigate])
+
   const books = [
     { id: 1, title: 'The Great Gatsby', author: 'F. Scott Fitzgerald', category: 'Fiction' },
     { id: 2, title: 'To Kill a Mockingbird', author: 'Harper Lee', category: 'Fiction' },

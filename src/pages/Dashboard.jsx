@@ -1,6 +1,20 @@
 import { Users as UsersIcon, TrendingUp, Activity, DollarSign, IndianRupee } from 'lucide-react'
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const Dashboard = () => {
+  
+  const navigate = useNavigate()
+  
+    const admin = localStorage.removeItem('adminUsername')
+
+  useEffect(() => {
+    console.log(admin)
+    if(!admin){
+      navigate('/')
+    }
+  }, [navigate])
+
   const stats = [
     { title: 'Total Users', value: '1,234', icon: UsersIcon, gradient: 'from-blue-500 to-cyan-500', bg: 'from-blue-50 to-cyan-50', change: '+12%' },
     { title: 'Total Books', value: '567', icon: Activity, gradient: 'from-purple-500 to-pink-500', bg: 'from-purple-50 to-pink-50', change: '+8%' },

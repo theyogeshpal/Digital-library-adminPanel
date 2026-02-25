@@ -1,15 +1,51 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Lock, Mail, Shield } from 'lucide-react'
+import { Lock, User, Shield } from 'lucide-react'
+import axios from 'axios'
+import Swal from 'sweetalert2'
 
 const Login = () => {
-  const [email, setEmail] = useState('')
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    navigate('/dashboard')
+
+    Swal.fire({
+      title: 'Verifying Credentials...',
+      text: 'Please wait while we authenticate',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
+    try {
+      const response = await axios.post('http://localhost:3000/api/admin/login', {
+        username,
+        password
+      });
+
+      localStorage.setItem('adminUsername', response.data.admin.username);
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Login Successful!',
+        text: 'Welcome to Admin Panel',
+        timer: 1500,
+        showConfirmButton: false
+      }).then(() => {
+        navigate('/dashboard');
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Login Failed',
+        text: error.response?.data?.message || 'Invalid credentials',
+        confirmButtonColor: '#1e293b'
+      });
+    }
   }
 
   return (
@@ -28,14 +64,14 @@ const Login = () => {
         <form onSubmit={handleSubmit}>
           <div className="mb-5">
             <label className="flex items-center gap-2 text-slate-700 font-medium mb-2">
-              <Mail className="w-4 h-4" />
-              Email Address
+              <User className="w-4 h-4" />
+              Username
             </label>
             <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@example.com"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter username"
               className="w-full px-4 py-3 border border-slate-300 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all"
               required
             />

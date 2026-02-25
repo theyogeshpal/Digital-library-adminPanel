@@ -1,9 +1,23 @@
 import { UserPlus, Edit2, Trash2, Mail, CheckCircle } from 'lucide-react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect} from 'react'
 import axios from 'axios'
+import Swal from 'sweetalert2'
+import { useNavigate } from 'react-router-dom'
 
 const Users = () => {
+
+  const navigate = useNavigate();
+
+  const admin = localStorage.removeItem('adminUsername')
+  useEffect(() => {
+    console.log(admin)
+    if(!admin){
+      navigate('/')
+    }
+  }, [navigate])
+
   const [users, setUsers] = useState([])
+
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -18,6 +32,51 @@ const Users = () => {
 
     fetchUsers()
   }, [])
+
+  const handleDelete = async (userId, userName) => {
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: `Do you want to delete ${userName}? This action cannot be undone!`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#EF4444',
+      cancelButtonColor: '#6B7280',
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel'
+    });
+
+    if (result.isConfirmed) {
+      Swal.fire({
+        title: 'Deleting User...',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+
+      try {
+        await axios.delete(`http://localhost:3000/api/user/delete/${userId}`);
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Deleted!',
+          text: 'User has been deleted successfully.',
+          timer: 1500,
+          showConfirmButton: false
+        });
+
+        // Refresh users list
+        setUsers(users.filter(user => (user._id || user.id) !== userId));
+      } catch (error) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Delete Failed',
+          text: error.response?.data?.message || 'Failed to delete user',
+          confirmButtonColor: '#4F46E5'
+        });
+      }
+    }
+  };
 
   return (
     <div>
@@ -70,11 +129,12 @@ const Users = () => {
                     <div className="flex gap-2">
                       <button className="flex items-center gap-1 bg-green-500 text-white px-2 py-2 rounded-lg hover:shadow-lg transition-all font-medium">
                         <Edit2 className="w-4 h-4" />
-                        
                       </button>
-                      <button className="flex items-center gap-1 bg-red-500 text-white px-2 py-2 rounded-lg hover:shadow-lg transition-all font-medium">
+                      <button 
+                        onClick={() => handleDelete(user._id || user.id, user.fullname)}
+                        className="flex items-center gap-1 bg-red-500 text-white px-2 py-2 rounded-lg hover:shadow-lg transition-all font-medium"
+                      >
                         <Trash2 className="w-4 h-4" />
-                        
                       </button>
                     </div>
                   </td>
@@ -111,7 +171,10 @@ const Users = () => {
                   <Edit2 className="w-4 h-4" />
                   Edit
                 </button>
-                <button className="flex-1 flex items-center justify-center gap-1 bg-gradient-to-r from-red-500 to-pink-500 text-white px-3 py-2 rounded-lg font-medium text-sm">
+                <button 
+                  onClick={() => handleDelete(user._id || user.id, user.fullname)}
+                  className="flex-1 flex items-center justify-center gap-1 bg-gradient-to-r from-red-500 to-pink-500 text-white px-3 py-2 rounded-lg font-medium text-sm"
+                >
                   <Trash2 className="w-4 h-4" />
                   Delete
                 </button>

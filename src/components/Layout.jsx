@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import Sidebar from '../components/Sidebar'
 import Header from '../components/Header'
@@ -9,6 +9,13 @@ import Settings from '../pages/Settings'
 
 const Layout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  const navigate = useNavigate()
+
+  const admin = localStorage.removeItem('adminUsername')
+  if(!admin){
+    navigate('/')
+  }
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
