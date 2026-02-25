@@ -2,6 +2,7 @@ import { BookPlus, Edit2, Trash2, Tag, X } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Swal from 'sweetalert2'
+import axios from 'axios'
 
 const Books = () => {
 
@@ -25,17 +26,25 @@ const Books = () => {
   
   const admin = localStorage.getItem('adminUsername');
   
+  
+  const [books, setBooks] = useState([])
+
   useEffect(() => {
     if(!admin){
       navigate('/')
     }
-  }, [navigate, admin])
 
-  const books = [
-    { id: 1, title: 'The Great Gatsby', author: 'F. Scott Fitzgerald', category: 'Fiction' },
-    { id: 2, title: 'To Kill a Mockingbird', author: 'Harper Lee', category: 'Fiction' },
-    { id: 3, title: '1984', author: 'George Orwell', category: 'Dystopian' },
-  ]
+    const getbookdata = async () => {
+      try {
+        const data = await axios.get('http://localhost:3000/book/show')
+        setBooks(data.data.data)
+      } catch (error) {
+        console.error('Error fetching books:', error)
+      }
+    }
+
+    getbookdata()
+  }, [navigate, admin])
 
   const handleAddBook = async (e) => {
     e.preventDefault();
@@ -50,8 +59,14 @@ const Books = () => {
     });
 
     try {
-      // API call will be added here
-      // await axios.post('API_URL', formData);
+      const bookFormData = new FormData();
+      Object.keys(formData).forEach(key => {
+        bookFormData.append(key, formData[key]);
+      });
+
+      await axios.post('https://digital-library-backend-jesb.onrender.com/book/add', bookFormData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
 
       Swal.fire({
         icon: 'success',
@@ -76,6 +91,9 @@ const Books = () => {
         description: '',
         fullDescription: ''
       });
+
+      const data = await axios.get('https://digital-library-backend-jesb.onrender.com/book/show')
+      setBooks(data.data.data)
     } catch (error) {
       Swal.fire({
         icon: 'error',
@@ -116,8 +134,8 @@ const Books = () => {
           </thead>
           <tbody>
             {books.map((book) => (
-              <tr key={book.id} className="border-t border-slate-100 hover:bg-purple-50/50 transition-colors">
-                <td className="px-6 py-4 font-semibold text-slate-700">{book.id}</td>
+              <tr key={book._id} className="border-t border-slate-100 hover:bg-purple-50/50 transition-colors">
+                <td className="px-6 py-4 font-semibold text-slate-700">{book._id}</td>
                 <td className="px-6 py-4 font-medium text-slate-800">{book.title}</td>
                 <td className="px-6 py-4 text-slate-600">{book.author}</td>
                 <td className="px-6 py-4">
@@ -145,15 +163,15 @@ const Books = () => {
       {/* Mobile Cards */}
       <div className="md:hidden space-y-4">
         {books.map((book) => (
-          <div key={book.id} className="bg-white/70 backdrop-blur-xl rounded-2xl shadow-xl p-4 border border-white/50">
+          <div key={book._id} className="bg-white/70 backdrop-blur-xl rounded-2xl shadow-xl p-4 border border-white/50">
             <div className="flex justify-between items-start mb-3">
               <div>
                 <h3 className="font-bold text-slate-800 text-lg">{book.title}</h3>
                 <p className="text-slate-600 text-sm">{book.author}</p>
               </div>
-              <span className="text-slate-500 text-sm font-semibold">#{book.id}</span>
+              <span className="text-slate-500 text-sm font-semibold">#{book._id}</span>
             </div>
-            <div className="mb-4">
+            <div className="mb-4">``
               <span className="inline-flex items-center gap-1 bg-gradient-to-r from-purple-400 to-pink-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
                 <Tag className="w-3 h-3" />
                 {book.category}
