@@ -1,12 +1,11 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, Users, BookOpen, Settings, LogOut, Sparkles, X } from 'lucide-react'
+import { LayoutDashboard, Users, BookOpen, LogOut, X } from 'lucide-react'
 
 const Sidebar = ({ isOpen, onClose }) => {
   const navItems = [
     { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { path: '/users', icon: Users, label: 'Users' },
     { path: '/books', icon: BookOpen, label: 'Books' },
-    { path: '/settings', icon: Settings, label: 'Settings' },
   ]
 
   const logout = () => {

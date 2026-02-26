@@ -5,7 +5,6 @@ import Header from '../components/Header'
 import Dashboard from '../pages/Dashboard'
 import Users from '../pages/Users'
 import Books from '../pages/Books'
-import Settings from '../pages/Settings'
 
 const Layout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -28,7 +27,6 @@ const Layout = () => {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/users" element={<Users />} />
             <Route path="/books" element={<Books />} />
-            <Route path="/settings" element={<Settings />} />
           </Routes>
         </main>
       </div>

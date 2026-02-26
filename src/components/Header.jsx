@@ -1,6 +1,9 @@
 import { Bell, Search, User, Menu } from 'lucide-react'
 
 const Header = ({ onMenuClick }) => {
+
+  const username = localStorage.getItem('adminUsername')
+
   return (
     <header className="bg-white/70 backdrop-blur-xl shadow-lg border-b border-white/20 p-4 sm:p-6 flex justify-between items-center sticky top-0 z-10">
       <div className="flex items-center gap-4">
@@ -29,7 +32,7 @@ const Header = ({ onMenuClick }) => {
           <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
         </button>
         <div className="flex items-center gap-2 sm:gap-3 bg-gradient-to-r from-blue-50 to-purple-50 px-2 sm:px-4 py-2 rounded-full border border-blue-200/50">
-          <span className="text-slate-700 font-medium text-sm hidden sm:inline">Admin</span>
+          <span className="text-slate-700 font-medium text-sm hidden sm:inline">{username}</span>
           <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-white shadow-lg">
             <User className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
