@@ -36,7 +36,7 @@ const Books = () => {
 
     const getbookdata = async () => {
       try {
-        const data = await axios.get('http://localhost:3000/book/show')
+        const data = await axios.get('https://digital-library-backend-jesb.onrender.com/book/show')
         setBooks(data.data.data)
       } catch (error) {
         console.error('Error fetching books:', error)
