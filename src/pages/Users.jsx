@@ -17,6 +17,8 @@ const Users = () => {
 
   const [users, setUsers] = useState([])
   const [showModal, setShowModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [editUser, setEditUser] = useState(null)
   const [formData, setFormData] = useState({
     fullname: '',
     username: '',
@@ -24,6 +26,12 @@ const Users = () => {
     password: '',
     confirmPassword: '',
     dob: ''
+  })
+  const [editFormData, setEditFormData] = useState({
+    fullname: '',
+    username: '',
+    email: '',
+    bio: ''
   })
 
   useEffect(() => {
@@ -140,6 +148,53 @@ const Users = () => {
     }
   };
 
+  const handleEditClick = (user) => {
+    setEditUser(user);
+    setEditFormData({
+      fullname: user.fullname,
+      username: user.username,
+      email: user.email,
+      bio: user.bio 
+    });
+    setShowEditModal(true);
+  };
+
+  const handleEditUser = async (e) => {
+    e.preventDefault();
+
+    Swal.fire({
+      title: 'Updating User...',
+      text: 'Please wait',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
+    try {
+      await axios.put('http://localhost:3000/api/user/update', editFormData);
+
+      Swal.fire({
+        icon: 'success',
+        title: 'User Updated!',
+        text: 'User profile has been updated successfully',
+        timer: 1500,
+        showConfirmButton: false
+      });
+
+      setShowEditModal(false);
+      const response = await axios.get('https://digital-library-backend-jesb.onrender.com/api/users');
+      setUsers(response.data.data);
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Update Failed',
+        text: error.response?.data?.message || 'Failed to update user',
+        confirmButtonColor: '#4F46E5'
+      });
+    }
+  };
+
   return (
     <div>
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
@@ -192,7 +247,10 @@ const Users = () => {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex gap-2">
-                      <button className="flex items-center gap-1 bg-green-500 text-white px-2 py-2 rounded-lg hover:shadow-lg transition-all font-medium">
+                      <button 
+                        onClick={() => handleEditClick(user)}
+                        className="flex items-center gap-1 bg-green-500 text-white px-2 py-2 rounded-lg hover:shadow-lg transition-all font-medium"
+                      >
                         <Edit2 className="w-4 h-4" />
                       </button>
                       <button 
@@ -232,7 +290,10 @@ const Users = () => {
                 {user.email}
               </div>
               <div className="flex gap-2">
-                <button className="flex-1 flex items-center justify-center gap-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-3 py-2 rounded-lg font-medium text-sm">
+                <button 
+                  onClick={() => handleEditClick(user)}
+                  className="flex-1 flex items-center justify-center gap-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-3 py-2 rounded-lg font-medium text-sm"
+                >
                   <Edit2 className="w-4 h-4" />
                   Edit
                 </button>
@@ -347,6 +408,83 @@ const Users = () => {
                   className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:shadow-lg transition-all font-semibold"
                 >
                   Create User
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit User Modal */}
+      {showEditModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 relative max-h-[90vh] overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-blue-500 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:hover:bg-blue-600">
+            <button
+              onClick={() => setShowEditModal(false)}
+              className="absolute top-4 right-4 w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors"
+            >
+              <X size={20} className="text-gray-600" />
+            </button>
+
+            <h2 className="text-2xl font-black text-gray-900 mb-4">Edit User</h2>
+
+            <form onSubmit={handleEditUser} className="space-y-4">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
+                <input
+                  type="text"
+                  value={editFormData.fullname}
+                  onChange={(e) => setEditFormData({...editFormData, fullname: e.target.value})}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Username</label>
+                <input
+                  type="text"
+                  value={editFormData.username}
+                  readOnly
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-50 text-gray-500 cursor-not-allowed"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+                <input
+                  type="email"
+                  value={editFormData.email}
+                  onChange={(e) => setEditFormData({...editFormData, email: e.target.value})}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Bio</label>
+                <textarea
+                  value={editFormData.bio}
+                  onChange={(e) => setEditFormData({...editFormData, bio: e.target.value})}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                  rows="3"
+                  placeholder="Enter bio"
+                />
+              </div>
+
+              <div className="flex gap-3 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowEditModal(false)}
+                  className="flex-1 px-6 py-3 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-colors font-semibold"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:shadow-lg transition-all font-semibold"
+                >
+                  Update User
                 </button>
               </div>
             </form>

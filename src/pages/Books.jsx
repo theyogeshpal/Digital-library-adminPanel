@@ -104,6 +104,41 @@ const Books = () => {
     }
   };
 
+  const deleteBook = async (id) => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You won\'t be able to revert this!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#4F46E5',
+      cancelButtonColor: '#9CA3AF',
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await axios.delete(`http://localhost:3000/book/delete/${id}`)
+          Swal.fire({
+            icon: 'success',
+            title: 'Deleted!',
+            text: 'Book has been deleted.',
+            timer: 1500,
+            showConfirmButton: false
+          });
+          const data = await axios.get('https://digital-library-backend-jesb.onrender.com/book/show')
+          setBooks(data.data.data)
+        } catch (error) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Failed to Delete Book',
+            text: error.response?.data?.message || 'Something went wrong',
+            confirmButtonColor: '#4F46E5'
+          });
+        }
+      }
+    });
+  }
+
   return (
     <div>
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
@@ -135,7 +170,7 @@ const Books = () => {
           <tbody>
             {books.map((book) => (
               <tr key={book._id} className="border-t border-slate-100 hover:bg-purple-50/50 transition-colors">
-                <td className="px-6 py-4 font-semibold text-slate-700">{book._id}</td>
+                <td className="px-6 py-4 font-semibold text-slate-700">#{book._id}</td>
                 <td className="px-6 py-4 font-medium text-slate-800">{book.title}</td>
                 <td className="px-6 py-4 text-slate-600">{book.author}</td>
                 <td className="px-6 py-4">
@@ -149,7 +184,9 @@ const Books = () => {
                     <button className="flex items-center gap-1 bg-green-600 text-white px-2 py-2 rounded-lg hover:shadow-lg transition-all font-medium">
                       <Edit2 className="w-4 h-4" />
                     </button>
-                    <button className="flex items-center gap-1 bg-red-500 text-white px-2 py-2 rounded-lg hover:shadow-lg transition-all font-medium">
+                    <button onClick={() => {
+                      deleteBook(book._id)
+                    }} className="flex items-center gap-1 bg-red-500 text-white px-2 py-2 rounded-lg hover:shadow-lg transition-all font-medium">
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
