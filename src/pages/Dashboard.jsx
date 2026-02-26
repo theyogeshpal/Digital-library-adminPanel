@@ -1,12 +1,13 @@
 import { Users as UsersIcon, TrendingUp, Activity, DollarSign, IndianRupee } from 'lucide-react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 const Dashboard = () => {
   
   const navigate = useNavigate()
-  
   const admin = localStorage.getItem('adminUsername')
+  const [totalUsers, setTotalUsers] = useState(0)
+  const [totalBooks, setTotalBooks] = useState(0)
 
   useEffect(() => {
     if(!admin){
@@ -14,11 +15,26 @@ const Dashboard = () => {
     }
   }, [navigate])
 
+  useEffect(() => {
+    const fetchCounts = async () => {
+      try {
+        const usersRes = await fetch('https://digital-library-backend-jesb.onrender.com/api/users/count')
+        const usersData = await usersRes.json()
+        setTotalUsers(usersData.totalUsers)
+
+        const booksRes = await fetch('https://digital-library-backend-jesb.onrender.com/book/count')
+        const booksData = await booksRes.json()
+        setTotalBooks(booksData.totalBooks)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    fetchCounts()
+  }, [])
+
   const stats = [
-    { title: 'Total Users', value: '1,234', icon: UsersIcon, gradient: 'from-blue-500 to-cyan-500', bg: 'from-blue-50 to-cyan-50', change: '+12%' },
-    { title: 'Total Books', value: '567', icon: Activity, gradient: 'from-purple-500 to-pink-500', bg: 'from-purple-50 to-pink-50', change: '+8%' },
-    { title: 'Active Loans', value: '89', icon: TrendingUp, gradient: 'from-orange-500 to-red-500', bg: 'from-orange-50 to-red-50', change: '+23%' },
-    { title: 'Revenue', value: '₹45,678', icon: IndianRupee, gradient: 'from-green-500 to-emerald-500', bg: 'from-green-50 to-emerald-50', change: '+15%' },
+    { title: 'Total Users', value: totalUsers, icon: UsersIcon, gradient: 'from-blue-500 to-cyan-500', bg: 'from-blue-50 to-cyan-50', change: '+12%' },
+    { title: 'Total Books', value: totalBooks, icon: Activity, gradient: 'from-purple-500 to-pink-500', bg: 'from-purple-50 to-pink-50', change: '+8%' }
   ]
 
   return (
