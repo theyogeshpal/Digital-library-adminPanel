@@ -220,6 +220,7 @@ const Books = () => {
               <th className="px-6 py-4 text-left text-sm font-bold text-slate-700 uppercase">ID</th>
               <th className="px-6 py-4 text-left text-sm font-bold text-slate-700 uppercase">Title</th>
               <th className="px-6 py-4 text-left text-sm font-bold text-slate-700 uppercase">Author</th>
+              <th className="px-6 py-4 text-left text-sm font-bold text-slate-700 uppercase">Like</th>
               <th className="px-6 py-4 text-left text-sm font-bold text-slate-700 uppercase">Category</th>
               <th className="px-6 py-4 text-left text-sm font-bold text-slate-700 uppercase">Actions</th>
             </tr>
@@ -230,6 +231,7 @@ const Books = () => {
                 <td className="px-6 py-4 font-semibold text-slate-700">#{book._id}</td>
                 <td className="px-6 py-4 font-medium text-slate-800">{book.title}</td>
                 <td className="px-6 py-4 text-slate-600">{book.author}</td>
+                <td className="px-6 py-4 text-slate-600">{book.likeCount? book.likeCount : 0}</td>
                 <td className="px-6 py-4">
                   <span className="flex items-center gap-2 border border-gray-500 text-gray-500 px-4 py-1 rounded-full text-sm font-semibold shadow-md w-fit hover:text-white hover:bg-gray-500">
                     <Tag className="w-4 h-4" />
