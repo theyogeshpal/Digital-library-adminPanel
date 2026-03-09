@@ -70,7 +70,7 @@ const Users = () => {
       });
 
       try {
-        await axios.delete(`http://localhost:3000/api/user/delete/${userId}`);
+        await axios.delete(`https://digital-library-backend-jesb.onrender.com/api/user/delete/${userId}`);
 
         Swal.fire({
           icon: 'success',
@@ -172,7 +172,7 @@ const Users = () => {
     });
 
     try {
-      await axios.put('http://localhost:3000/api/user/update', editFormData);
+      await axios.put('https://digital-library-backend-jesb.onrender.com/api/user/update', editFormData);
 
       Swal.fire({
         icon: 'success',
@@ -254,7 +254,7 @@ const Users = () => {
                         <Edit2 className="w-4 h-4" />
                       </button>
                       <button 
-                        onClick={() => handleDelete(user._id || user.id, user.fullname)}
+                        onClick={() => handleDelete(user._id, user.fullname)}
                         className="flex items-center gap-1 bg-red-500 text-white px-2 py-2 rounded-lg hover:shadow-lg transition-all font-medium"
                       >
                         <Trash2 className="w-4 h-4" />
